@@ -11,6 +11,7 @@
 | **Django 2.0**   | DRF 3.7+    | DRF 3.7+    | DRF 3.7+    |
 | **Django 2.1**   | DRF 3.7+    | DRF 3.7+    | DRF 3.7+    |
 | **Django 2.2**   | DRF 3.7+    | DRF 3.7+    | DRF 3.7+    |
+| **Django 3.0**   | **NO**      | DRF 3.10    | DRF 3.10    |
 
 ## Installation
 
