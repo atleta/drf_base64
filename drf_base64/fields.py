@@ -1,4 +1,5 @@
 import base64
+import mimetypes
 import uuid
 
 from django.core.files.base import ContentFile
@@ -11,14 +12,11 @@ class Base64FieldMixin(object):
     def _decode(self, data):
         if isinstance(data, str) and data.startswith('data:'):
             # base64 encoded file - decode
-            format, datastr = data.split(';base64,')    # format ~= data:image/X,
-            ext = format.split('/')[-1]    # guess file extension
-            if ext[:3] == 'svg':
-                ext = 'svg'
+            mime_type, datastr = data[5:].split(';base64,')
 
             data = ContentFile(
                 base64.b64decode(datastr),
-                name='{}.{}'.format(uuid.uuid4(), ext)
+                name='{}.{}'.format(uuid.uuid4(), mimetypes.guess_extension(mime_type))
             )
 
         elif isinstance(data, str) and data.startswith('http'):
