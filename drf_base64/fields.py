@@ -16,7 +16,7 @@ class Base64FieldMixin(object):
 
             data = ContentFile(
                 base64.b64decode(datastr),
-                name='{}.{}'.format(uuid.uuid4(), mimetypes.guess_extension(mime_type))
+                name='{}{}'.format(uuid.uuid4(), mimetypes.guess_extension(mime_type) or '.bin')
             )
 
         elif isinstance(data, str) and data.startswith('http'):
