@@ -10,18 +10,18 @@ from rest_framework.fields import SkipField
 class Base64FieldMixin(object):
 
     def _decode(self, data):
-        if isinstance(data, str) and data.startswith('data:'):
-            # base64 encoded file - decode
-            mime_type, datastr = data[5:].split(';base64,')
+        if isinstance(data, str):
+            if data.startswith('data:'):
+                # base64 encoded file - decode
+                mime_type, datastr = data[5:].split(';base64,')
 
-            data = ContentFile(
-                base64.b64decode(datastr),
-                name='{}{}'.format(uuid.uuid4(), mimetypes.guess_extension(mime_type) or '.bin')
-            )
-
-        elif isinstance(data, str) and data.startswith('http'):
-            raise SkipField()
-
+                data = ContentFile(
+                    base64.b64decode(datastr),
+                    name='{}{}'.format(uuid.uuid4(), mimetypes.guess_extension(mime_type) or '.bin')
+                )
+            elif data.startswith('http'):
+                raise SkipField()
+            
         return data
 
     def to_internal_value(self, data):
