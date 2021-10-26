@@ -1,4 +1,5 @@
 import base64
+import magic
 import mimetypes
 import uuid
 
@@ -14,14 +15,23 @@ class MimeContentFile(ContentFile):
 
 class Base64FieldMixin(object):
 
+    def __init__(self, *args, **kwargs):
+        self.guess_type = kwargs.pop('guess_type', False)
+
+        super().__init__(*args, **kwargs)
+
     def _decode(self, data):
         if isinstance(data, str):
             if data.startswith('data:'):
                 # base64 encoded file - decode
                 mime_type, datastr = data[5:].split(';base64,')
+                data = base64.b64decode(datastr)
+
+                if self.guess_type:
+                    mime_type = magic.from_buffer(data, mime=True)
 
                 data = MimeContentFile(
-                    base64.b64decode(datastr),
+                    data,
                     name='{}{}'.format(uuid.uuid4(), mimetypes.guess_extension(mime_type) or '.bin'),
                     mime_type=mime_type
                 )
