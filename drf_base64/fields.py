@@ -17,6 +17,7 @@ class Base64FieldMixin(object):
 
     def __init__(self, *args, **kwargs):
         self.guess_type = kwargs.pop('guess_type', False)
+        self.default_type = kwargs.pop('default_type', None)
 
         super().__init__(*args, **kwargs)
 
@@ -29,6 +30,9 @@ class Base64FieldMixin(object):
 
                 if self.guess_type:
                     mime_type = magic.from_buffer(data, mime=True)
+
+                    if not data and self.default_type:
+                        mime_type = self.default_type
 
                 data = MimeContentFile(
                     data,
