@@ -15,9 +15,10 @@ class MimeContentFile(ContentFile):
 
 class Base64FieldMixin(object):
 
-    def __init__(self, *args, **kwargs):
-        self.guess_type = kwargs.pop('guess_type', False)
-        self.default_type = kwargs.pop('default_type', None)
+    def __init__(self, guess_type=False, default_type=None, mime_types=mimetypes.MimeTypes(), *args, **kwargs):
+        self.guess_type = guess_type
+        self.default_type = default_type
+        self.mime_types = mime_types
 
         super().__init__(*args, **kwargs)
 
@@ -36,7 +37,7 @@ class Base64FieldMixin(object):
 
                 data = MimeContentFile(
                     data,
-                    name='{}{}'.format(uuid.uuid4(), mimetypes.guess_extension(mime_type) or '.bin'),
+                    name='{}{}'.format(uuid.uuid4(), self.mime_types.guess_extension(mime_type) or '.bin'),
                     mime_type=mime_type
                 )
             elif data.startswith('http'):
